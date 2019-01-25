@@ -27,6 +27,7 @@ public class Node {
         this.puzzleState = puzzleState;
         children = new ArrayList<>();
     }
+
     public int[] getPuzzleState() {
         return puzzleState;
     }
@@ -94,7 +95,6 @@ public class Node {
          * and the moveRight successor node will not be created.
          */
         if (indexOfZero != 2 && indexOfZero != 5 && indexOfZero != 8) {
-            movement.add("RIGHT");
             //keeping parent for output
             copyPuzzle(childPuzzleRight, puzzleState);
             // Moves 0 to the right
@@ -111,7 +111,6 @@ public class Node {
          * and moveLeft succesor node will not be created.
          */
         if (indexOfZero != 0 && indexOfZero != 3 && indexOfZero != 6) {
-            movement.add("LEFT");
             copyPuzzle(childPuzzleLeft, puzzleState);
             //moves zero left
             int temp = childPuzzleLeft[indexOfZero - 1];
@@ -127,15 +126,12 @@ public class Node {
 
          */
         if (indexOfZero != 0 && indexOfZero != 1 && indexOfZero  != 2) {
-            movement.add("UP");
             copyPuzzle(childPuzzleUp,puzzleState);
             // moves 0 up
             int temp = childPuzzleUp[indexOfZero - 3];
             childPuzzleUp[indexOfZero - 3] = childPuzzleUp[indexOfZero];
             childPuzzleUp[indexOfZero] = temp;
-
             childNodeCreator(childPuzzleUp);
-     //       successors.add(new Node(childPuzzleUp));
         }
         /**
          * moveDowncreates successor node with move Up as long as
@@ -144,7 +140,6 @@ public class Node {
          *
          */
         if (indexOfZero != 6 && indexOfZero != 7 && indexOfZero != 8) {
-            movement.add("DOWN");
             copyPuzzle(childPuzzleDown,puzzleState);
             //move 0 down
             int temp = childPuzzleDown[indexOfZero + 3];

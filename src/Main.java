@@ -48,8 +48,6 @@ public class Main {
 
     public static void main(String args[]) {
 
-        Main myMain = new Main();
-
         //Builds all board difficulties
         Node nodeEasy = new Node(easyPuzzle);
         Node nodeMedium = new Node(mediumPuzzle);
@@ -78,7 +76,7 @@ public class Main {
                     System.out.println("You chose medium\n");
                     nodeMedium.printPuzzle();
                     finalPuzzle = nodeMedium;
-                } else if(userInput == 3) {
+                } else{
                     System.out.println("You chose hard\n");
                     nodeHard.printPuzzle();
                     finalPuzzle = nodeHard;
@@ -87,6 +85,7 @@ public class Main {
 
             System.out.println("Please choose a search algorithm:");
             System.out.println("1: Breadth First Search");
+            System.out.println("2: Depth First Search");
 
             int userInput2 = sc.nextInt();
             if(userInput2 < 1 || userInput2 > 7){
@@ -94,12 +93,15 @@ public class Main {
             }else {
                 if (userInput2 == 1) {
                     System.out.println("You chose BreadthFirstSearch");
-                    Search search = new Search(finalPuzzle, goalState);
+                    System.out.println("Running Search.....");
+                    Search search = new Search(finalPuzzle);
                     search.breadthFirstSearch();
-                  //  myMain.solutionFinder(solution);
                 }
                 if(userInput2 == 2){
                     System.out.println("You chose DepthFirstSearch");
+                    System.out.println("Running search....");
+                    Search search = new Search(finalPuzzle);
+                    search.depthFirstSearch();
                 }
                 if(userInput2 == 3){
                     System.out.println("You chose Uniform Cost ");
