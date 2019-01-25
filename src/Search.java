@@ -42,7 +42,7 @@ public class Search {
                     goalFound = true;
                 }
                 if (!queue.contains(childNode) && !visited.contains(childNode.getPuzzleState())) {
-                        queue.add(childNode);
+                    queue.add(childNode);
                 }
             }
         }

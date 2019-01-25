@@ -38,14 +38,6 @@ public class Main {
                     3,2,1
             };
 
-    //Goal state for all puzzles and searches
-   final static int[] goalState =
-            {
-                    1,2,3,
-                    8,0,4,
-                    7,6,5
-            };
-
     public static void main(String args[]) {
 
         //Builds all board difficulties
@@ -86,37 +78,44 @@ public class Main {
             System.out.println("Please choose a search algorithm:");
             System.out.println("1: Breadth First Search");
             System.out.println("2: Depth First Search");
+            System.out.println("3: Uniform Cost");
+            System.out.println("4: Greedy Best First");
+            System.out.println("5: A* search");
+            System.out.println("6: A* with Manhattan Search");
 
             int userInput2 = sc.nextInt();
+            Search search = new Search(finalPuzzle);
             if(userInput2 < 1 || userInput2 > 7){
                 System.out.println("Please enter a number between 1 and 7");
             }else {
                 if (userInput2 == 1) {
                     System.out.println("You chose BreadthFirstSearch");
                     System.out.println("Running Search.....");
-                    Search search = new Search(finalPuzzle);
                     search.breadthFirstSearch();
                 }
                 if(userInput2 == 2){
                     System.out.println("You chose DepthFirstSearch");
                     System.out.println("Running search....");
-                    Search search = new Search(finalPuzzle);
                     search.depthFirstSearch();
                 }
                 if(userInput2 == 3){
                     System.out.println("You chose Uniform Cost ");
+                    System.out.println("Running search....");
                 }
                 if(userInput2 == 4){
                     System.out.println("You chose Greedy Best First");
+                    System.out.println("Running search....");
                 }
+
                 if(userInput2 == 5){
                     System.out.println("You chose A* search");
+                    System.out.println("Running search....");
                 }
                 if(userInput2 == 6){
                     System.out.println("You chose A* with Manhattan Search");
+                    System.out.println("Running search....");
                 }
 
             }
-
     }
 }
