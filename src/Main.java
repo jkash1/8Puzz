@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-
-
 public class Main {
 
     /*
@@ -21,8 +19,6 @@ public class Main {
     //easy difficulty puzzle
     final static int[] easyPuzzle =
             {
-
-
                     1,3,4,
                     8,6,2,
                     7,0,5
@@ -50,34 +46,17 @@ public class Main {
                     7,6,5
             };
 
-/*
-    public void solutionFinder(ArrayList<Node> solution){
-        if(solution.size() > 0) {
-            for(int i =0; i < solution.size();i++) {
-                solution.get(i).printPuzzle();
-            }
-        }else{
-            System.out.println("No path found");
-        }
-    }*/
-
-
-
     public static void main(String args[]) {
 
         Main myMain = new Main();
-
 
         //Builds all board difficulties
         Node nodeEasy = new Node(easyPuzzle);
         Node nodeMedium = new Node(mediumPuzzle);
         Node nodeHard = new Node(hardPuzzle);
-    //1    Node nodeGoal = new Node(goalState);
 
         //by default
         Node finalPuzzle = nodeEasy;
-
-     //   BreadthFirstSearch bs = new BreadthFirstSearch();
 
             Scanner sc = new Scanner(System.in);
 
@@ -99,7 +78,7 @@ public class Main {
                     System.out.println("You chose medium\n");
                     nodeMedium.printPuzzle();
                     finalPuzzle = nodeMedium;
-                } else if (userInput == 3) {
+                } else if(userInput == 3) {
                     System.out.println("You chose hard\n");
                     nodeHard.printPuzzle();
                     finalPuzzle = nodeHard;

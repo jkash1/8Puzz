@@ -27,17 +27,8 @@ public class Node {
         this.puzzleState = puzzleState;
         children = new ArrayList<>();
     }
-
     public int[] getPuzzleState() {
         return puzzleState;
-    }
-
-    public Node getParent() {
-        return parent;
-    }
-
-    public void setParent(Node parent) {
-        this.parent = parent;
     }
 
     public ArrayList<Node> getChildren() {
@@ -84,10 +75,7 @@ public class Node {
         this.totalCost = totalCost;
     }
 
-
-
     public ArrayList<Node> createSuccessors() {
-        ArrayList<Node> successors = new ArrayList<>();
 
         int indexOfZero = 0;
         int[] childPuzzleRight = new int[9];
@@ -109,15 +97,13 @@ public class Node {
             movement.add("RIGHT");
             //keeping parent for output
             copyPuzzle(childPuzzleRight, puzzleState);
+            Node parent = new Node(puzzleState);
             // Moves 0 to the right
             // In future will need to get cost of swapped item
             int temp = childPuzzleRight[indexOfZero + 1];
             childPuzzleRight[indexOfZero + 1] = childPuzzleRight[indexOfZero];
             childPuzzleRight[indexOfZero] = temp;
-
             childNodeCreator(childPuzzleRight);
-            successors.add(new Node(childPuzzleRight));
-
         }
 
         /**
@@ -132,9 +118,7 @@ public class Node {
             int temp = childPuzzleLeft[indexOfZero - 1];
             childPuzzleLeft[indexOfZero - 1] = childPuzzleLeft[indexOfZero];
             childPuzzleLeft[indexOfZero] = temp;
-
-           childNodeCreator(childPuzzleLeft);
-           successors.add(new Node(childPuzzleLeft));
+            childNodeCreator(childPuzzleLeft);
         }
 
         /**
@@ -152,7 +136,7 @@ public class Node {
             childPuzzleUp[indexOfZero] = temp;
 
             childNodeCreator(childPuzzleUp);
-            successors.add(new Node(childPuzzleUp));
+     //       successors.add(new Node(childPuzzleUp));
         }
         /**
          * moveDowncreates successor node with move Up as long as
@@ -168,11 +152,9 @@ public class Node {
             childPuzzleDown[indexOfZero + 3] = childPuzzleDown[indexOfZero];
             childPuzzleDown[indexOfZero] = temp;
             childNodeCreator(childPuzzleDown);
-            successors.add(new Node(childPuzzleDown));
         }
-        return successors;
+        return children;
     }
-
 
     // successor helper
     public void childNodeCreator(int[] childPuzzle) {
@@ -180,7 +162,6 @@ public class Node {
         children.add(child);
         child.parent = this;
     }
-
     //used to create child arrays
     public void copyPuzzle(int[] childPuzzle, int[] parentPuzzle) {
         for (int i = 0; i < parentPuzzle.length; i++) {
@@ -188,15 +169,6 @@ public class Node {
         }
     }
 
-    public boolean isSamePuzzle(int[] p){
-        boolean samePuzzle = true;
-        for(int i = 0; i < p.length; i++){
-            if(puzzleState[i] != p[i]){
-                samePuzzle = false;
-            }
-        }
-        return samePuzzle;
-    }
 
     public boolean isGoal(){
         if(Arrays.equals(puzzleState, GOAL)){
