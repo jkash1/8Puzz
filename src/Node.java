@@ -97,7 +97,6 @@ public class Node {
             movement.add("RIGHT");
             //keeping parent for output
             copyPuzzle(childPuzzleRight, puzzleState);
-            Node parent = new Node(puzzleState);
             // Moves 0 to the right
             // In future will need to get cost of swapped item
             int temp = childPuzzleRight[indexOfZero + 1];
@@ -162,6 +161,7 @@ public class Node {
         children.add(child);
         child.parent = this;
     }
+
     //used to create child arrays
     public void copyPuzzle(int[] childPuzzle, int[] parentPuzzle) {
         for (int i = 0; i < parentPuzzle.length; i++) {
@@ -169,14 +169,12 @@ public class Node {
         }
     }
 
-
     public boolean isGoal(){
         if(Arrays.equals(puzzleState, GOAL)){
             return true;
         }
         return false;
     }
-
 
     public void printPuzzle() {
         int tile = 0;

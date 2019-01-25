@@ -34,7 +34,6 @@ public class Search {
 
                     System.out.println("========================================");
                     System.out.println("Goal Node Found: ");
-                   // childIndex.printPuzzle();
                     System.out.println("Nodes Visited:" + length);
                     System.out.println("Moves to Goal:");
                     System.out.println("Movement Cost: ");
@@ -69,3 +68,4 @@ public class Search {
             }
     }
 }
+
