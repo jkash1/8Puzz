@@ -6,9 +6,8 @@ public class Main {
     /*
     This class runs the Game and User Interface
     User may choose the difficulty of the Puzzle and
-    the type of search algorithm they will use to solve it
-    this also outputs all the related statistics for
-    the algorithms
+    the type of search algorithm they will use to solve
+    the algorithms.
      */
 
     /*
@@ -38,6 +37,7 @@ public class Main {
                     3,2,1
             };
 
+
     public static void main(String args[]) {
 
         //Builds all board difficulties
@@ -45,9 +45,10 @@ public class Main {
         Node nodeMedium = new Node(mediumPuzzle);
         Node nodeHard = new Node(hardPuzzle);
 
-        //by default
+        //Default Initializer
         Node finalPuzzle = nodeEasy;
 
+            //Self explanatory user code below
             Scanner sc = new Scanner(System.in);
 
             System.out.println("This is an 8-Puzzle Solver");

@@ -11,18 +11,18 @@ public class Search {
 
     private List<Node> childPath = new LinkedList<>(); // Used to hold the path from found node to root
 
- //   private Set<Node> visited = new HashSet<>(); // holds all Visited Nodes
-    private ArrayList<int[]> visited = new ArrayList<>();
+ //   private Set<Node> visited = new HashSet<>();
+    private ArrayList<int[]> visited = new ArrayList<>();// holds all Visited Node states
+
     private int nodesVisited = 0;
 
-    // Tkaes in the root node i.e. The initial State
+    // Takes in the root node i.e. The initial State
     public Search(Node root) {
         this.root = root;
     }
-
+/*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
     /**
      * Breadth First Search
-     *
      */
     public void breadthFirstSearch() {
         queue.add(root); //adds root Node to queue
@@ -31,24 +31,24 @@ public class Search {
             nodesVisited += 1;
             Node currentNode = queue.poll(); // removes front node from queue adds to current
             visited.add(currentNode.getPuzzleState()); // add the current Node to visited
-            ArrayList<Node> nextSuccessors = currentNode.createSuccessors();
+            ArrayList<Node> nextSuccessors = currentNode.createSuccessors(); //Creates Nodes in successor function
             for (Node childNode : nextSuccessors) {
-                if(!isList(visited, childNode.getPuzzleState())){
-                    if (childNode.isGoal()) {
-                        childPathTracer(childPath, childNode);
-                        GoalPrinter(nodesVisited);
-                        pathPrinter(childPath);
-                        goalFound = true;
+                if(!isList(visited, childNode.getPuzzleState())){ // checks to see if childNodeState is in visited
+                    if (childNode.isGoal()) { //goal checker
+                        childPathTracer(childPath, childNode);  //creates a path from found goal to rootNode
+                        pathPrinter(childPath);//prints path from found goal to rootNode
+                        GoalPrinter(nodesVisited); //Prints statistics
+
+                        goalFound = true; //exits loop
                     }
-                    if (!queue.contains(childNode)) {
-                        queue.add(childNode);
+                    if (!queue.contains(childNode)) { //make sure queue doesn't contain child
+                        queue.add(childNode); //add child to front of the queue
                     }
                 }
             }
         }
     }
-
-
+/*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
     /**
      * Depth First Search
      */
@@ -58,34 +58,34 @@ public class Search {
         while (!stack.empty() && !goalFound) { //checks if stack is not empty
             nodesVisited += 1;
             Node currentNode = stack.pop(); // removes top of stack
-            LinkedList<Node> succQ = new LinkedList<>();
             ArrayList<Node> nextSuccessors = currentNode.createSuccessors();
             for (Node childNode : nextSuccessors) {
-     //           System.out.println(Arrays.toString(childNode.getPuzzleState()));
+                if(!isList(visited, childNode.getPuzzleState())) {
+                    if (childNode.isGoal()) {
+                        childPathTracer(childPath, childNode);
+                        pathPrinter(childPath);
+                        GoalPrinter(nodesVisited);
 
-                if (childNode.isGoal()) {
-                    childPathTracer(childPath, childNode);
-                    GoalPrinter(nodesVisited);
-                    pathPrinter(childPath);
-                    goalFound = true;
-                }
-                if (!stack.contains(childNode) && !visited.contains(childNode.getPuzzleState())) {
-                    visited.add(currentNode.getPuzzleState());
-                    // stack.push(childNode);
+                        goalFound = true;
+                    }
+                    if (!stack.contains(childNode) && !visited.contains(childNode.getPuzzleState())) {
+                        visited.add(currentNode.getPuzzleState());
+                        stack.push(childNode);
+                    }
                 }
             }
-            stack.addAll(succQ);
-            succQ.clear();
-            nextSuccessors.clear();
         }
     }
+/*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
+
 
 
     /**
      * Printer function to help clean the code
      * @param nodesVisited
      */
-    public void GoalPrinter(int nodesVisited){
+    public void GoalPrinter(int nodesVisited)
+    {
     System.out.println("========================================");
     System.out.println("Goal Node Found!");
     System.out.println("Nodes Visited:" + nodesVisited);
@@ -93,15 +93,17 @@ public class Search {
     System.out.println("Movement Cost: ");
     System.out.println("Total Cost: ");
     System.out.println("=====================================");
-}
-
-
-
-
-    public boolean isList(List<int[]> visit, int[] node){
-        return visit.stream().anyMatch(a-> Arrays.equals(a, node));
     }
 
+    /**
+     * Lambda Expression to determine if a nodeState is in the
+     * visited arrayList or not. This was used because I did not want to
+     * rewrite equals and hashcode for hashset
+     */
+
+    public boolean isList(List<int[]> visit, int[] nodeState){
+        return visit.stream().anyMatch(a-> Arrays.equals(a, nodeState));
+    }
 
 
     /**
@@ -112,8 +114,7 @@ public class Search {
     public void childPathTracer(List<Node> path, Node n){
         Node current = n;
         path.add(current);
-
-        while((current.parent != null)){
+        while(current.parent != null){
             current = current.parent;
             path.add(current);
         }
@@ -130,7 +131,7 @@ public class Search {
                     childPath.get(i).printPuzzle();
                 }
             }else{
-                System.out.println("no path found");
+                System.out.println("error");
             }
     }
 

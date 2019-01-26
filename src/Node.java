@@ -76,8 +76,17 @@ public class Node {
         this.totalCost = totalCost;
     }
 
-    public ArrayList<Node> createSuccessors() {
 
+    /**
+     * This method creates an arrayList of successor Nodes. The nodes contain an int[] which
+     * is the puzzleState. This method loops through the initial puzzleState (root and then parent).
+     * It uses a copy puzzle method to create the initial puzzleState. It then swaps the indexes of
+     * the array and uses childNodeCreator to an ArrayList<Node> of children with the new states.
+     * It also adds its parent.
+     * @return
+     */
+
+    public ArrayList<Node> createSuccessors() {
         int indexOfZero = 0;
         int[] childPuzzleRight = new int[9];
         int[] childPuzzleLeft = new int[9];
@@ -90,15 +99,11 @@ public class Node {
         }
 
         /**
-         * moveRightcreates successor node with move to the right as long as
-         * it is valid. If the indexOfZero is 2, 5, or 8 condition will fail
-         * and the moveRight successor node will not be created.
+         * This condition moves 0 right creating a successor node as long as
+         * it is valid. If the indexOfZero is 2, 5, or 8 condition will fail.
          */
         if (indexOfZero != 2 && indexOfZero != 5 && indexOfZero != 8) {
-            //keeping parent for output
             copyPuzzle(childPuzzleRight, puzzleState);
-            // Moves 0 to the right
-            // In future will need to get cost of swapped item
             int temp = childPuzzleRight[indexOfZero + 1];
             childPuzzleRight[indexOfZero + 1] = childPuzzleRight[indexOfZero];
             childPuzzleRight[indexOfZero] = temp;
@@ -106,13 +111,11 @@ public class Node {
         }
 
         /**
-         * moveLeft() method creates successor node with move to the left as long as
-         * it is valid. If the indexOfZero is 0, 3, or 6 condition will be false
-         * and moveLeft succesor node will not be created.
+         * This condition moves 0 Left creating a successor node as long as
+         * it is valid. If the indexOfZero is 0, 3, or 6 condition will fail.
          */
         if (indexOfZero != 0 && indexOfZero != 3 && indexOfZero != 6) {
             copyPuzzle(childPuzzleLeft, puzzleState);
-            //moves zero left
             int temp = childPuzzleLeft[indexOfZero - 1];
             childPuzzleLeft[indexOfZero - 1] = childPuzzleLeft[indexOfZero];
             childPuzzleLeft[indexOfZero] = temp;
@@ -120,28 +123,23 @@ public class Node {
         }
 
         /**
-         * moveUp creates successor node with move Up as long as
-         * it is valid. If the indexOfZero is 0, 1, or 2 condition will be false
-         * and moveUp succesor node will not be created.
-
+         * This condition moves 0 Up creating a successor node as long as
+         * it is valid. If the indexOfZero is 0, 1, or 2 condition will fail.
          */
         if (indexOfZero != 0 && indexOfZero != 1 && indexOfZero  != 2) {
             copyPuzzle(childPuzzleUp,puzzleState);
-            // moves 0 up
             int temp = childPuzzleUp[indexOfZero - 3];
             childPuzzleUp[indexOfZero - 3] = childPuzzleUp[indexOfZero];
             childPuzzleUp[indexOfZero] = temp;
             childNodeCreator(childPuzzleUp);
         }
+
         /**
-         * moveDowncreates successor node with move Up as long as
-         * it is valid. If the indexOfZero is 6, 7, or 8 condition will be false
-         * and moveDown successor node will not be created.
-         *
+         * This condition moves 0 Down creating a successor node as long as
+         * it is valid. If the indexOfZero is 6, 7, or 8 condition will fail.
          */
         if (indexOfZero != 6 && indexOfZero != 7 && indexOfZero != 8) {
             copyPuzzle(childPuzzleDown,puzzleState);
-            //move 0 down
             int temp = childPuzzleDown[indexOfZero + 3];
             childPuzzleDown[indexOfZero + 3] = childPuzzleDown[indexOfZero];
             childPuzzleDown[indexOfZero] = temp;
@@ -150,19 +148,34 @@ public class Node {
         return children;
     }
 
-    // successor helper
+    /**
+     * Create Successor helper method takes in the new childPuzzle and creates
+     * a new Node of the updated move.
+     * @param childPuzzle
+     */
     public void childNodeCreator(int[] childPuzzle) {
         Node child = new Node(childPuzzle);
         children.add(child);
         child.parent = this;
     }
 
-    //used to create child arrays
+
+    /**
+     * Used in createSuccessor(). This method copies the parentNode's state into
+     * a new childPuzzle array. After the swap the new child puzzle is used in childNodeCreator().
+     * @param childPuzzle
+     * @param parentPuzzle
+     */
     public void copyPuzzle(int[] childPuzzle, int[] parentPuzzle) {
         for (int i = 0; i < parentPuzzle.length; i++) {
             childPuzzle[i] = parentPuzzle[i];
         }
     }
+
+    /**
+     * Checks if the puzzleState is the Goal or not. Used in search methods to determine
+     * if Node isGoal or not.
+     */
 
     public boolean isGoal(){
         if(Arrays.equals(puzzleState, GOAL)){
@@ -171,6 +184,9 @@ public class Node {
         return false;
     }
 
+    /**
+     * Formats the puzzleState to output the N-Array as a visual puzzle.
+     */
     public void printPuzzle() {
         int tile = 0;
         for (int i = 0; i < columnLength; i++) {
