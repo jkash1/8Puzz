@@ -11,8 +11,8 @@ public class Search {
 
     private List<Node> childPath = new LinkedList<>(); // Used to hold the path from found node to root
 
-    private Set<int[]> visited = new HashSet<>(); // holds all Visited Nodes
-
+ //   private Set<Node> visited = new HashSet<>(); // holds all Visited Nodes
+    private ArrayList<int[]> visited = new ArrayList<>();
     private int nodesVisited = 0;
 
     // Tkaes in the root node i.e. The initial State
@@ -27,32 +27,31 @@ public class Search {
     public void breadthFirstSearch() {
         queue.add(root); //adds root Node to queue
         boolean goalFound = false;
-        while (!queue.isEmpty() && !goalFound) { //checks if queue is not empty run loop
+        while (!queue.isEmpty() && !goalFound) { // checks if queue is not empty run loop
             nodesVisited += 1;
             Node currentNode = queue.poll(); // removes front node from queue adds to current
             visited.add(currentNode.getPuzzleState()); // add the current Node to visited
             ArrayList<Node> nextSuccessors = currentNode.createSuccessors();
-
             for (Node childNode : nextSuccessors) {
-                System.out.println(Arrays.toString(childNode.getPuzzleState()));
-                if (childNode.isGoal()) {
-                    childPathTracer(childPath, childNode);
-                    GoalPrinter(nodesVisited);
-                    pathPrinter(childPath);
-                    goalFound = true;
-                }
-                if (!queue.contains(childNode) && !visited.contains(childNode.getPuzzleState())) {
-                    queue.add(childNode);
+                if(!isList(visited, childNode.getPuzzleState())){
+                    if (childNode.isGoal()) {
+                        childPathTracer(childPath, childNode);
+                        GoalPrinter(nodesVisited);
+                        pathPrinter(childPath);
+                        goalFound = true;
+                    }
+                    if (!queue.contains(childNode)) {
+                        queue.add(childNode);
+                    }
                 }
             }
         }
     }
 
+
     /**
      * Depth First Search
      */
-
-
     public void depthFirstSearch() {
         stack.push(root); // pushes root Node onto Stack
         boolean goalFound = false;
@@ -63,7 +62,7 @@ public class Search {
             ArrayList<Node> nextSuccessors = currentNode.createSuccessors();
             for (Node childNode : nextSuccessors) {
      //           System.out.println(Arrays.toString(childNode.getPuzzleState()));
-                (succQ).addAll(nextSuccessors);
+
                 if (childNode.isGoal()) {
                     childPathTracer(childPath, childNode);
                     GoalPrinter(nodesVisited);
@@ -74,7 +73,6 @@ public class Search {
                     visited.add(currentNode.getPuzzleState());
                     // stack.push(childNode);
                 }
-
             }
             stack.addAll(succQ);
             succQ.clear();
@@ -85,7 +83,7 @@ public class Search {
 
     /**
      * Printer function to help clean the code
-     * @param length
+     * @param nodesVisited
      */
     public void GoalPrinter(int nodesVisited){
     System.out.println("========================================");
@@ -96,6 +94,15 @@ public class Search {
     System.out.println("Total Cost: ");
     System.out.println("=====================================");
 }
+
+
+
+
+    public boolean isList(List<int[]> visit, int[] node){
+        return visit.stream().anyMatch(a-> Arrays.equals(a, node));
+    }
+
+
 
     /**
      * Traces the path from final goal node up to the root adding the parents to a list path
