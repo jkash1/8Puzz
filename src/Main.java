@@ -107,6 +107,7 @@ public class Main {
                 if(userInput2 == 4){
                     System.out.println("You chose Greedy Best First");
                     System.out.println("Running search....");
+                    search.bestFirstSearch();
                 }
 
                 if(userInput2 == 5){

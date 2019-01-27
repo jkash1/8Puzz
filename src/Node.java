@@ -14,10 +14,12 @@ public class Node {
     private final int SIZE = 9;
 
     private String move;
-    //heuristics
-    private int cost; // g(n)
+
+    private int cost; //cost of a single node g(n)
+    private int eval; //f(n)
     private int costToGoal; // h(n)
-    private int totalCost; // f(n)
+    private int totalCost; // g(n) cost from start to node n
+    private int numMisplaced;
 
     private final int[] GOAL = new int[]{ 1,2,3,8,0,4,7,6,5 }; //Goal State
     private int[] puzzleState; //Nodes puzzleState
@@ -46,10 +48,14 @@ public class Node {
     public int getCostToGoal() {
         return costToGoal;
     }
-
     public void setCostToGoal(int costToGoal) {
         this.costToGoal = costToGoal;
     }
+    public void setNumMisplaces(int numMisplaced){ this.numMisplaced = numMisplaced;}
+
+    public int getNumMisplaced(){return numMisplaced;}
+
+
 
     public int getTotalCost() {
         return totalCost;
@@ -135,7 +141,7 @@ public class Node {
         if (indexOfZero != 6 && indexOfZero != 7 && indexOfZero != 8) {
             String move = "DOWN";
             copyPuzzle(childPuzzleDown,puzzleState);
-            costDown = childPuzzleRight[indexOfZero + 3];
+            costDown = childPuzzleDown[indexOfZero + 3];
             int temp = childPuzzleDown[indexOfZero + 3];
             childPuzzleDown[indexOfZero + 3] = childPuzzleDown[indexOfZero];
             childPuzzleDown[indexOfZero] = temp;
@@ -194,5 +200,13 @@ public class Node {
         }
         System.out.println();
     }
+
+
+
+
+
+
+
+
 
 }

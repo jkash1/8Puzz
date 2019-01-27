@@ -2,7 +2,7 @@ import java.lang.reflect.Array;
 import java.util.*;
 
 public class Search {
-
+    private final int[] GOAL = new int[]{ 1,2,3,8,0,4,7,6,5 };
     private Node root; // Initial State
 
     private Queue<Node> queue = new LinkedList<>(); // Used in Breadth first search
@@ -12,8 +12,8 @@ public class Search {
     private List<Node> childPath = new LinkedList<>(); // Used to hold the path from found node to root
 
     private PriorityQueue<Node> priorityQueue = new PriorityQueue<>(costComparator);
- //   private Set<Node> visited = new HashSet<>();
 
+ //   private Set<Node> visited = new HashSet<>();
     private ArrayList<int[]> visited = new ArrayList<>();// holds all Visited Node states
 
     private int nodesVisited = 0;
@@ -108,25 +108,73 @@ public void uniformCostSearch() {
         }
     }
 }
-    public static Comparator<Node> costComparator = new Comparator<Node>() {
-        @Override
-        public int compare(Node o1, Node o2) {
-            return (o1.getTotalCost() - o2.getTotalCost());
-        }
-    };
+
 
 /*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
 /**
  * Best First Search
  */
+    Queue<Node> examined = new LinkedList<>();
+    PriorityQueue<Node> bestPriorityQueue = new PriorityQueue<>(costComparator);
+    public void bestFirstSearch(){
+        bestPriorityQueue.add(root);
+        boolean goalFound = false;
+        while(!bestPriorityQueue.isEmpty() && !goalFound) {
+            nodesVisited+=1;
+            Node currentNode = bestPriorityQueue.poll(); // removes the min Node
+            visited.add(currentNode.getPuzzleState());
+            ArrayList<Node> nextSuccessors = currentNode.createSuccessors();
+            for (Node childNode : nextSuccessors) {
+                if (!isList(visited, childNode.getPuzzleState())) { // checks to see if childNodeState is in visited
+                    if (childNode.isGoal()) { //goal checker
+                        childPathTracer(childPath, childNode);  //creates a path from found goal to rootNode
+                        pathPrinter(childPath);//prints path from found goal to rootNode
+                        GoalPrinter(nodesVisited, movementPrint(childPath), depthCalculator(childPath), movementCostPrint(childPath), childNode.getTotalCost()); //Prints statistics
+                        goalFound = true; //exits loop
+                    }
+                    childNode.setTotalCost(tileMovementHeuristic(childNode.getPuzzleState(), GOAL));
+                    System.out.println(Arrays.toString(childNode.getPuzzleState()));
+                    System.out.println(childNode.getTotalCost());
+                    if(!bestPriorityQueue.contains(childNode)){
+                        bestPriorityQueue.add(childNode);
+                    }
+                }
+            }
+        }
+    }
+
+
+
 /*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
 /**
  * A*1
  */
+
+
+
+
+
+
+
+
+
+
+
 /*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
 /**
  * A*2
  * */
+
+
+
+
+
+
+
+
+
+
+
 /*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
 
 
@@ -183,6 +231,13 @@ public void uniformCostSearch() {
         return sum;
     }
 
+    public static Comparator<Node> costComparator = new Comparator<Node>() {
+        @Override
+        public int compare(Node o1, Node o2) {
+            return (o1.getTotalCost() - o2.getTotalCost());
+        }
+    };
+
     public int depthCalculator(List<Node> childPath){
         int depth = 0;
         for(int i = 0; i < childPath.size(); i++){
@@ -216,6 +271,22 @@ public void uniformCostSearch() {
             }else{
                 System.out.println("error");
             }
+    }
+
+
+    private int tileMovementHeuristic(int[] puzzleState, int[] goal){
+        int missedTiles = 0;
+        for(int i = 0; i < puzzleState.length; i++){
+            if(puzzleState[i] != goal[i]){
+                missedTiles+=1;
+            }
+        }
+        return missedTiles;
+    }
+
+
+    private int manhattanHeuristic(int[] puzzleState, int[] goal){
+        return 0;
     }
 
 
