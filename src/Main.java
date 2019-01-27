@@ -41,9 +41,9 @@ public class Main {
     public static void main(String args[]) {
 
         //Builds all board difficulties
-        Node nodeEasy = new Node(easyPuzzle);
-        Node nodeMedium = new Node(mediumPuzzle);
-        Node nodeHard = new Node(hardPuzzle);
+        Node nodeEasy = new Node(easyPuzzle, 0 ,"");
+        Node nodeMedium = new Node(mediumPuzzle, 0, "");
+        Node nodeHard = new Node(hardPuzzle,0, "");
 
         //Default Initializer
         Node finalPuzzle = nodeEasy;
@@ -102,6 +102,7 @@ public class Main {
                 if(userInput2 == 3){
                     System.out.println("You chose Uniform Cost ");
                     System.out.println("Running search....");
+                    search.uniformCostSearch();
                 }
                 if(userInput2 == 4){
                     System.out.println("You chose Greedy Best First");

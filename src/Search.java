@@ -11,6 +11,8 @@ public class Search {
 
     private List<Node> childPath = new LinkedList<>(); // Used to hold the path from found node to root
 
+
+    private PriorityQueue<Node> priorityQueue = new PriorityQueue<>(Node.costComparator);
  //   private Set<Node> visited = new HashSet<>();
     private ArrayList<int[]> visited = new ArrayList<>();// holds all Visited Node states
 
@@ -37,8 +39,7 @@ public class Search {
                     if (childNode.isGoal()) { //goal checker
                         childPathTracer(childPath, childNode);  //creates a path from found goal to rootNode
                         pathPrinter(childPath);//prints path from found goal to rootNode
-                        GoalPrinter(nodesVisited); //Prints statistics
-
+                        GoalPrinter(nodesVisited, movementPrint(childPath), movementCostPrint(childPath)); //Prints statistics
                         goalFound = true; //exits loop
                     }
                     if (!queue.contains(childNode)) { //make sure queue doesn't contain child
@@ -59,16 +60,16 @@ public class Search {
             nodesVisited += 1;
             Node currentNode = stack.pop(); // removes top of stack
             ArrayList<Node> nextSuccessors = currentNode.createSuccessors();
+            System.out.println(Arrays.toString(currentNode.getPuzzleState()));
             for (Node childNode : nextSuccessors) {
                 if(!isList(visited, childNode.getPuzzleState())) {
                     if (childNode.isGoal()) {
                         childPathTracer(childPath, childNode);
                         pathPrinter(childPath);
-                        GoalPrinter(nodesVisited);
-
+                        GoalPrinter(nodesVisited, movementPrint(childPath), movementCostPrint(childPath));
                         goalFound = true;
                     }
-                    if (!stack.contains(childNode) && !visited.contains(childNode.getPuzzleState())) {
+                    if (!stack.contains(childNode)) {
                         visited.add(currentNode.getPuzzleState());
                         stack.push(childNode);
                     }
@@ -77,26 +78,70 @@ public class Search {
         }
     }
 /*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
+/**
+ * Uniform Cost Search
+ */
 
+public void uniformCostSearch() {
+    priorityQueue.add(root);//adds root Node to front of Priority queue
+    boolean goalFound = false;
+    root.setTotalCost(root.getTotalCost()); // sets total cost as 0
+    while (!priorityQueue.isEmpty() && !goalFound) { // checks if queue is not empty run loop
+        nodesVisited += 1;
+        Node currentNode = priorityQueue.remove(); // removes highest priority Node
+        visited.add(currentNode.getPuzzleState()); // add the current Node to visited
+        ArrayList<Node> nextSuccessors = currentNode.createSuccessors();//Creates Nodes in successor function
+        for (Node childNode : nextSuccessors) {
+            if(!isList(visited, childNode.getPuzzleState())){ // checks to see if childNodeState is in visited
+                if (childNode.isGoal()) { //goal checker
+                    childPathTracer(childPath, childNode);  //creates a path from found goal to rootNode
+                    pathPrinter(childPath);//prints path from found goal to rootNode
+                    GoalPrinter(nodesVisited, movementPrint(childPath), movementCostPrint(childPath)); //Prints statistics
+
+                    goalFound = true; //exits loop
+                }
+                childNode.setTotalCost(childNode.getCost() + childNode.getTotalCost());
+               priorityQueue.sort((Node o1, Node o2)->o1.getTotalCost()-o2.getTotalCost());
+                if (!priorityQueue.contains(childNode)) { //make sure queue doesn't contain child
+                    priorityQueue.add(childNode); //add child to front of the queue
+                }
+            }
+        }
+    }
+}
+
+/*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
+/**
+ * Best First Search
+ */
+/*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
+/**
+ * A*1
+ */
+/*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
+/**
+ * A*2
+ * */
+/*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
 
 
     /**
      * Printer function to help clean the code
      * @param nodesVisited
      */
-    public void GoalPrinter(int nodesVisited)
+    public void GoalPrinter(int nodesVisited, ArrayList<String> moves, int moveCost)
     {
     System.out.println("========================================");
     System.out.println("Goal Node Found!");
-    System.out.println("Nodes Visited:" + nodesVisited);
-    System.out.println("Moves to Goal: ");
-    System.out.println("Movement Cost: ");
+    System.out.println("Nodes Visited: " + nodesVisited);
+    System.out.println("Moves to Goal: " + moves);
+    System.out.println("Path Cost: " + moveCost);
     System.out.println("Total Cost: ");
     System.out.println("=====================================");
     }
 
     /**
-     * Lambda Expression to determine if a nodeState is in the
+     * Stream to determine if a nodeState is in the
      * visited arrayList or not. This was used because I did not want to
      * rewrite equals and hashcode for hashset
      */
@@ -120,6 +165,29 @@ public class Search {
         }
     }
 
+    public  int movementCostPrint(List<Node> childPath){
+        int sum = 0;
+        ArrayList<Integer> movementCost = new ArrayList<>();
+        for (int i = childPath.size() - 1; i >= 0; i--) {
+            movementCost.add(childPath.get(i).getCost());
+        }
+        for (int i = 0; i < movementCost.size(); i++) {
+            sum = movementCost.stream().mapToInt(Integer::intValue).sum();
+        }
+        return sum;
+    }
+
+
+    public ArrayList<String> movementPrint(List<Node> childPath) {
+        ArrayList<String> movement = new ArrayList<>();
+        if (childPath.size() > 0) {
+            for (int i = childPath.size() - 1; i >= 0; i--) {
+                movement.add(childPath.get(i).getMove());
+            }
+        }
+        return movement;
+    }
+
     /**
      *  takes in the list filled by the childPathTracer and prints out that path
      *  If there is no path prints no path
@@ -129,6 +197,8 @@ public class Search {
             if(childPath.size() > 0){
                 for(int i = 0; i < childPath.size(); i++){
                     childPath.get(i).printPuzzle();
+                    System.out.println(childPath.get(i).getCost());
+
                 }
             }else{
                 System.out.println("error");

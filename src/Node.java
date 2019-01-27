@@ -2,29 +2,35 @@ import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 
 
 public class Node {
 
     //ArrayList to hold all child nodes
     private ArrayList<Node> children;
-    ArrayList<String> movement  = new ArrayList<>();
     public Node parent;
 
     public final static int columnLength = 3;
     private final int SIZE = 9;
 
+    private String move;
+
     //heuristics
     private int cost; // g(n)
+    private ArrayList<Integer> movementCost;
     private int costToGoal; // h(n)
     private int totalCost; // f(n)
+
     private final int[] GOAL = new int[]{ 1,2,3,8,0,4,7,6,5 };
     private int[] puzzleState;
     private int depth;
 
     //Node Constructor
-    public Node(int[] puzzleState) {
+    public Node(int[] puzzleState, int cost, String move) {
         this.puzzleState = puzzleState;
+        this.cost = cost;
+        this.move = move;
         children = new ArrayList<>();
     }
 
@@ -32,16 +38,9 @@ public class Node {
         return puzzleState;
     }
 
-    public ArrayList<Node> getChildren() {
-        return children;
-    }
 
-    public void setChildren(ArrayList<Node> children) {
-        this.children = children;
-    }
-
-    public void addChild(Node child) {
-        children.add(child);
+    public String getMove() {
+        return move;
     }
 
     public int getDepth() {
@@ -56,9 +55,6 @@ public class Node {
         return cost;
     }
 
-    public void setCost(int cost) {
-        this.cost = cost;
-    }
 
     public int getCostToGoal() {
         return costToGoal;
@@ -92,6 +88,11 @@ public class Node {
         int[] childPuzzleLeft = new int[9];
         int[] childPuzzleUp = new int[9];
         int[] childPuzzleDown = new int[9];
+        int costRight;
+        int costLeft;
+        int costUp;
+        int costDown;
+
 
         for (int i = 0; i <  SIZE; i++) {
             if (puzzleState[i] == 0)
@@ -103,11 +104,13 @@ public class Node {
          * it is valid. If the indexOfZero is 2, 5, or 8 condition will fail.
          */
         if (indexOfZero != 2 && indexOfZero != 5 && indexOfZero != 8) {
+            String move = "RIGHT";
             copyPuzzle(childPuzzleRight, puzzleState);
+            costRight = childPuzzleRight[indexOfZero + 1];
             int temp = childPuzzleRight[indexOfZero + 1];
             childPuzzleRight[indexOfZero + 1] = childPuzzleRight[indexOfZero];
             childPuzzleRight[indexOfZero] = temp;
-            childNodeCreator(childPuzzleRight);
+            childNodeCreator(childPuzzleRight, costRight, move);
         }
 
         /**
@@ -115,11 +118,13 @@ public class Node {
          * it is valid. If the indexOfZero is 0, 3, or 6 condition will fail.
          */
         if (indexOfZero != 0 && indexOfZero != 3 && indexOfZero != 6) {
+            String move = "LEFT";
             copyPuzzle(childPuzzleLeft, puzzleState);
+            costLeft = childPuzzleLeft[indexOfZero - 1];
             int temp = childPuzzleLeft[indexOfZero - 1];
             childPuzzleLeft[indexOfZero - 1] = childPuzzleLeft[indexOfZero];
             childPuzzleLeft[indexOfZero] = temp;
-            childNodeCreator(childPuzzleLeft);
+            childNodeCreator(childPuzzleLeft, costLeft, move);
         }
 
         /**
@@ -127,11 +132,13 @@ public class Node {
          * it is valid. If the indexOfZero is 0, 1, or 2 condition will fail.
          */
         if (indexOfZero != 0 && indexOfZero != 1 && indexOfZero  != 2) {
+            String move = "UP";
             copyPuzzle(childPuzzleUp,puzzleState);
+            costUp = childPuzzleUp[indexOfZero - 3];
             int temp = childPuzzleUp[indexOfZero - 3];
             childPuzzleUp[indexOfZero - 3] = childPuzzleUp[indexOfZero];
             childPuzzleUp[indexOfZero] = temp;
-            childNodeCreator(childPuzzleUp);
+            childNodeCreator(childPuzzleUp, costUp, move);
         }
 
         /**
@@ -139,11 +146,13 @@ public class Node {
          * it is valid. If the indexOfZero is 6, 7, or 8 condition will fail.
          */
         if (indexOfZero != 6 && indexOfZero != 7 && indexOfZero != 8) {
+            String move = "DOWN";
             copyPuzzle(childPuzzleDown,puzzleState);
+            costDown = childPuzzleRight[indexOfZero + 3];
             int temp = childPuzzleDown[indexOfZero + 3];
             childPuzzleDown[indexOfZero + 3] = childPuzzleDown[indexOfZero];
             childPuzzleDown[indexOfZero] = temp;
-            childNodeCreator(childPuzzleDown);
+            childNodeCreator(childPuzzleDown, costDown, move);
         }
         return children;
     }
@@ -153,8 +162,8 @@ public class Node {
      * a new Node of the updated move.
      * @param childPuzzle
      */
-    public void childNodeCreator(int[] childPuzzle) {
-        Node child = new Node(childPuzzle);
+    public void childNodeCreator(int[] childPuzzle, int cost, String move) {
+        Node child = new Node(childPuzzle, cost, move);
         children.add(child);
         child.parent = this;
     }
@@ -198,4 +207,11 @@ public class Node {
         }
         System.out.println();
     }
+  /*  public static Comparator<Node> costComparator = new Comparator<Node>() {
+        @Override
+        public int compare(Node o1, Node o2) {
+            return (o1.getTotalCost() - o2.getTotalCost());
+        }
+    };*/
+
 }
