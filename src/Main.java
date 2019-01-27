@@ -41,9 +41,9 @@ public class Main {
     public static void main(String args[]) {
 
         //Builds all board difficulties
-        Node nodeEasy = new Node(easyPuzzle, 0 ,"");
-        Node nodeMedium = new Node(mediumPuzzle, 0, "");
-        Node nodeHard = new Node(hardPuzzle,0, "");
+        Node nodeEasy = new Node(easyPuzzle, 0 ,"", 0);
+        Node nodeMedium = new Node(mediumPuzzle, 0, "", 0);
+        Node nodeHard = new Node(hardPuzzle,0, "", 0);
 
         //Default Initializer
         Node finalPuzzle = nodeEasy;

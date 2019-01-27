@@ -11,9 +11,9 @@ public class Search {
 
     private List<Node> childPath = new LinkedList<>(); // Used to hold the path from found node to root
 
-
-    private PriorityQueue<Node> priorityQueue = new PriorityQueue<>(Node.costComparator);
+    private PriorityQueue<Node> priorityQueue = new PriorityQueue<>(costComparator);
  //   private Set<Node> visited = new HashSet<>();
+
     private ArrayList<int[]> visited = new ArrayList<>();// holds all Visited Node states
 
     private int nodesVisited = 0;
@@ -39,7 +39,7 @@ public class Search {
                     if (childNode.isGoal()) { //goal checker
                         childPathTracer(childPath, childNode);  //creates a path from found goal to rootNode
                         pathPrinter(childPath);//prints path from found goal to rootNode
-                        GoalPrinter(nodesVisited, movementPrint(childPath), movementCostPrint(childPath)); //Prints statistics
+                        GoalPrinter(nodesVisited, movementPrint(childPath), depthCalculator(childPath), movementCostPrint(childPath),  childNode.getTotalCost()); //Prints statistics
                         goalFound = true; //exits loop
                     }
                     if (!queue.contains(childNode)) { //make sure queue doesn't contain child
@@ -59,14 +59,13 @@ public class Search {
         while (!stack.empty() && !goalFound) { //checks if stack is not empty
             nodesVisited += 1;
             Node currentNode = stack.pop(); // removes top of stack
-            ArrayList<Node> nextSuccessors = currentNode.createSuccessors();
-            System.out.println(Arrays.toString(currentNode.getPuzzleState()));
+            ArrayList<Node> nextSuccessors = currentNode.createSuccessors(); // Creates successors
             for (Node childNode : nextSuccessors) {
-                if(!isList(visited, childNode.getPuzzleState())) {
+                if(!isList(visited, childNode.getPuzzleState())) { //checks if puzzle already visited
                     if (childNode.isGoal()) {
                         childPathTracer(childPath, childNode);
                         pathPrinter(childPath);
-                        GoalPrinter(nodesVisited, movementPrint(childPath), movementCostPrint(childPath));
+                        GoalPrinter(nodesVisited, movementPrint(childPath), depthCalculator(childPath), movementCostPrint(childPath), childNode.getTotalCost());
                         goalFound = true;
                     }
                     if (!stack.contains(childNode)) {
@@ -80,28 +79,28 @@ public class Search {
 /*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
 /**
  * Uniform Cost Search
+ * Uses a priority Queue with a costComparator function that orders newly created nodes in the queue
  */
 
 public void uniformCostSearch() {
     priorityQueue.add(root);//adds root Node to front of Priority queue
     boolean goalFound = false;
-    root.setTotalCost(root.getTotalCost()); // sets total cost as 0
+    int totalCost;
     while (!priorityQueue.isEmpty() && !goalFound) { // checks if queue is not empty run loop
         nodesVisited += 1;
-        Node currentNode = priorityQueue.remove(); // removes highest priority Node
+        Node currentNode = priorityQueue.poll(); // removes highest priority Node
         visited.add(currentNode.getPuzzleState()); // add the current Node to visited
         ArrayList<Node> nextSuccessors = currentNode.createSuccessors();//Creates Nodes in successor function
         for (Node childNode : nextSuccessors) {
             if(!isList(visited, childNode.getPuzzleState())){ // checks to see if childNodeState is in visited
+                totalCost = childNode.getCost() + childNode.getTotalCost(); // tallies Cost
+                childNode.setTotalCost(totalCost); //sets childNodes cost
                 if (childNode.isGoal()) { //goal checker
                     childPathTracer(childPath, childNode);  //creates a path from found goal to rootNode
                     pathPrinter(childPath);//prints path from found goal to rootNode
-                    GoalPrinter(nodesVisited, movementPrint(childPath), movementCostPrint(childPath)); //Prints statistics
-
+                    GoalPrinter(nodesVisited, movementPrint(childPath), depthCalculator(childPath), movementCostPrint(childPath), childNode.getTotalCost()); //Prints statistics
                     goalFound = true; //exits loop
                 }
-                childNode.setTotalCost(childNode.getCost() + childNode.getTotalCost());
-               priorityQueue.sort((Node o1, Node o2)->o1.getTotalCost()-o2.getTotalCost());
                 if (!priorityQueue.contains(childNode)) { //make sure queue doesn't contain child
                     priorityQueue.add(childNode); //add child to front of the queue
                 }
@@ -109,6 +108,12 @@ public void uniformCostSearch() {
         }
     }
 }
+    public static Comparator<Node> costComparator = new Comparator<Node>() {
+        @Override
+        public int compare(Node o1, Node o2) {
+            return (o1.getTotalCost() - o2.getTotalCost());
+        }
+    };
 
 /*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
 /**
@@ -129,14 +134,15 @@ public void uniformCostSearch() {
      * Printer function to help clean the code
      * @param nodesVisited
      */
-    public void GoalPrinter(int nodesVisited, ArrayList<String> moves, int moveCost)
+    public void GoalPrinter(int nodesVisited, ArrayList<String> moves, int depth, int moveCost, int totalCost)
     {
     System.out.println("========================================");
     System.out.println("Goal Node Found!");
     System.out.println("Nodes Visited: " + nodesVisited);
     System.out.println("Moves to Goal: " + moves);
+    System.out.println("Depth: " + depth );
     System.out.println("Path Cost: " + moveCost);
-    System.out.println("Total Cost: ");
+    System.out.println("Total Path Cost: " + totalCost );
     System.out.println("=====================================");
     }
 
@@ -177,6 +183,13 @@ public void uniformCostSearch() {
         return sum;
     }
 
+    public int depthCalculator(List<Node> childPath){
+        int depth = 0;
+        for(int i = 0; i < childPath.size(); i++){
+            depth += 1;
+        }
+        return depth;
+    }
 
     public ArrayList<String> movementPrint(List<Node> childPath) {
         ArrayList<String> movement = new ArrayList<>();
@@ -197,7 +210,7 @@ public void uniformCostSearch() {
             if(childPath.size() > 0){
                 for(int i = 0; i < childPath.size(); i++){
                     childPath.get(i).printPuzzle();
-                    System.out.println(childPath.get(i).getCost());
+                    System.out.println("Current Cost:" + childPath.get(i).getTotalCost());
 
                 }
             }else{

@@ -7,30 +7,27 @@ import java.util.Comparator;
 
 public class Node {
 
-    //ArrayList to hold all child nodes
-    private ArrayList<Node> children;
+    private ArrayList<Node> children;//ArrayList to hold all child nodes
     public Node parent;
 
     public final static int columnLength = 3;
     private final int SIZE = 9;
 
     private String move;
-
     //heuristics
     private int cost; // g(n)
-    private ArrayList<Integer> movementCost;
     private int costToGoal; // h(n)
     private int totalCost; // f(n)
 
-    private final int[] GOAL = new int[]{ 1,2,3,8,0,4,7,6,5 };
-    private int[] puzzleState;
-    private int depth;
+    private final int[] GOAL = new int[]{ 1,2,3,8,0,4,7,6,5 }; //Goal State
+    private int[] puzzleState; //Nodes puzzleState
 
     //Node Constructor
-    public Node(int[] puzzleState, int cost, String move) {
+    public Node(int[] puzzleState, int cost, String move, int totalCost) {
         this.puzzleState = puzzleState;
         this.cost = cost;
         this.move = move;
+        this.totalCost = totalCost;
         children = new ArrayList<>();
     }
 
@@ -38,23 +35,13 @@ public class Node {
         return puzzleState;
     }
 
-
     public String getMove() {
         return move;
-    }
-
-    public int getDepth() {
-        return depth;
-    }
-
-    public void setDepth(int depth) {
-        this.depth = depth;
     }
 
     public int getCost() {
         return cost;
     }
-
 
     public int getCostToGoal() {
         return costToGoal;
@@ -93,7 +80,7 @@ public class Node {
         int costUp;
         int costDown;
 
-
+        //Finds indexOfZero
         for (int i = 0; i <  SIZE; i++) {
             if (puzzleState[i] == 0)
                 indexOfZero = i;
@@ -110,7 +97,7 @@ public class Node {
             int temp = childPuzzleRight[indexOfZero + 1];
             childPuzzleRight[indexOfZero + 1] = childPuzzleRight[indexOfZero];
             childPuzzleRight[indexOfZero] = temp;
-            childNodeCreator(childPuzzleRight, costRight, move);
+            childNodeCreator(childPuzzleRight, costRight, move, totalCost);
         }
 
         /**
@@ -124,7 +111,7 @@ public class Node {
             int temp = childPuzzleLeft[indexOfZero - 1];
             childPuzzleLeft[indexOfZero - 1] = childPuzzleLeft[indexOfZero];
             childPuzzleLeft[indexOfZero] = temp;
-            childNodeCreator(childPuzzleLeft, costLeft, move);
+            childNodeCreator(childPuzzleLeft, costLeft, move, totalCost);
         }
 
         /**
@@ -138,7 +125,7 @@ public class Node {
             int temp = childPuzzleUp[indexOfZero - 3];
             childPuzzleUp[indexOfZero - 3] = childPuzzleUp[indexOfZero];
             childPuzzleUp[indexOfZero] = temp;
-            childNodeCreator(childPuzzleUp, costUp, move);
+            childNodeCreator(childPuzzleUp, costUp, move, totalCost);
         }
 
         /**
@@ -152,7 +139,7 @@ public class Node {
             int temp = childPuzzleDown[indexOfZero + 3];
             childPuzzleDown[indexOfZero + 3] = childPuzzleDown[indexOfZero];
             childPuzzleDown[indexOfZero] = temp;
-            childNodeCreator(childPuzzleDown, costDown, move);
+            childNodeCreator(childPuzzleDown, costDown, move, totalCost);
         }
         return children;
     }
@@ -162,8 +149,8 @@ public class Node {
      * a new Node of the updated move.
      * @param childPuzzle
      */
-    public void childNodeCreator(int[] childPuzzle, int cost, String move) {
-        Node child = new Node(childPuzzle, cost, move);
+    public void childNodeCreator(int[] childPuzzle, int cost, String move, int totalCost) {
+        Node child = new Node(childPuzzle, cost, move, totalCost);
         children.add(child);
         child.parent = this;
     }
@@ -207,11 +194,5 @@ public class Node {
         }
         System.out.println();
     }
-  /*  public static Comparator<Node> costComparator = new Comparator<Node>() {
-        @Override
-        public int compare(Node o1, Node o2) {
-            return (o1.getTotalCost() - o2.getTotalCost());
-        }
-    };*/
 
 }
