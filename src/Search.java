@@ -1,6 +1,7 @@
 import java.lang.reflect.Array;
 import java.util.*;
 
+@SuppressWarnings("Duplicates")
 public class Search {
     private final int[] GOAL = new int[]{ 1,2,3,8,0,4,7,6,5 };
     private Node root; // Initial State
@@ -13,7 +14,7 @@ public class Search {
 
     private PriorityQueue<Node> priorityQueue = new PriorityQueue<>(costComparator);
 
- //   private Set<Node> visited = new HashSet<>();
+   // private Set<int[]> visited = new HashSet<>();
     private ArrayList<int[]> visited = new ArrayList<>();// holds all Visited Node states
 
     private int nodesVisited = 0;
@@ -114,7 +115,6 @@ public void uniformCostSearch() {
 /**
  * Best First Search
  */
-    Queue<Node> examined = new LinkedList<>();
     PriorityQueue<Node> bestPriorityQueue = new PriorityQueue<>(costComparator);
     public void bestFirstSearch(){
         bestPriorityQueue.add(root);
@@ -133,8 +133,6 @@ public void uniformCostSearch() {
                         goalFound = true; //exits loop
                     }
                     childNode.setTotalCost(tileMovementHeuristic(childNode.getPuzzleState(), GOAL));
-                    System.out.println(Arrays.toString(childNode.getPuzzleState()));
-                    System.out.println(childNode.getTotalCost());
                     if(!bestPriorityQueue.contains(childNode)){
                         bestPriorityQueue.add(childNode);
                     }
@@ -143,37 +141,72 @@ public void uniformCostSearch() {
         }
     }
 
-
-
 /*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
 /**
  * A*1
  */
 
-
-
-
-
-
-
-
-
-
+PriorityQueue<Node> a1PriorityQueue = new PriorityQueue<>(costComparator);
+    public void aStar1FirstSearch(){
+        a1PriorityQueue.add(root);
+        boolean goalFound = false;
+        int totalCost;
+        while(!a1PriorityQueue.isEmpty() && !goalFound) {
+            nodesVisited+=1;
+            Node currentNode = a1PriorityQueue.poll(); // removes the min Node
+            visited.add(currentNode.getPuzzleState());
+            ArrayList<Node> nextSuccessors = currentNode.createSuccessors();
+            for (Node childNode : nextSuccessors) {
+                if (!isList(visited, childNode.getPuzzleState())) { // checks to see if childNodeState is in visited
+                    if (childNode.isGoal()) { //goal checker
+                        childPathTracer(childPath, childNode);  //creates a path from found goal to rootNode
+                        pathPrinter(childPath);//prints path from found goal to rootNode
+                        GoalPrinter(nodesVisited, movementPrint(childPath), depthCalculator(childPath), movementCostPrint(childPath), childNode.getTotalCost()); //Prints statistics
+                        goalFound = true; //exits loop
+                    }
+                    totalCost = childNode.getCost() + childNode.getTotalCost(); // tallies Cost
+                    childNode.setTotalCost(totalCost + tileMovementHeuristic(childNode.getPuzzleState(), GOAL));
+                    if(!a1PriorityQueue.contains(childNode)){
+                        a1PriorityQueue.add(childNode);
+                    }
+                }
+            }
+        }
+    }
 
 /*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
 /**
  * A*2
  * */
 
-
-
-
-
-
-
-
-
-
+PriorityQueue<Node> a2PriorityQueue = new PriorityQueue<>(costComparator);
+    public void aStar2FirstSearch(){
+        a2PriorityQueue.add(root);
+        boolean goalFound = false;
+        int totalCost;
+        while(!a2PriorityQueue.isEmpty() && !goalFound) {
+            nodesVisited+=1;
+            System.out.println(nodesVisited);
+            Node currentNode = a2PriorityQueue.poll(); // removes the min Node
+            visited.add(currentNode.getPuzzleState());
+            ArrayList<Node> nextSuccessors = currentNode.createSuccessors();
+            for (Node childNode : nextSuccessors) {
+                if (!isList(visited, childNode.getPuzzleState())) { // checks to see if childNodeState is in visited
+                    if (childNode.isGoal()) { //goal checker
+                        childPathTracer(childPath, childNode);  //creates a path from found goal to rootNode
+                        pathPrinter(childPath);//prints path from found goal to rootNode
+                        GoalPrinter(nodesVisited, movementPrint(childPath), depthCalculator(childPath), movementCostPrint(childPath), childNode.getTotalCost()); //Prints statistics
+                        goalFound = true; //exits loop
+                    }
+                    totalCost = childNode.getCost() + childNode.getTotalCost(); // tallies Cost
+                    childNode.setTotalCost(totalCost +manhattanHeuristic(childNode.getPuzzleState(), GOAL));
+                    if(!a2PriorityQueue.contains(childNode)){
+                        a2PriorityQueue.add(childNode);
+                    }
+                }
+            }
+        }
+    }
 
 /*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
 
@@ -286,7 +319,15 @@ public void uniformCostSearch() {
 
 
     private int manhattanHeuristic(int[] puzzleState, int[] goal){
-        return 0;
+        int manhattanDistance = 0;
+        for(int i = 0; i < puzzleState.length;i++){
+            for(int j = 0; j < puzzleState.length; j++){
+                if(puzzleState[i] == GOAL[j]){
+                    manhattanDistance = ((Math.abs(i % 3 - j % 3)) + (Math.abs(i / 3 + j / 3)));
+                }
+            }
+        }
+        return manhattanDistance;
     }
 
 

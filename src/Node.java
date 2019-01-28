@@ -66,6 +66,7 @@ public class Node {
     }
 
 
+
     /**
      * This method creates an arrayList of successor Nodes. The nodes contain an int[] which
      * is the puzzleState. This method loops through the initial puzzleState (root and then parent).

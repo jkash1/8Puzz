@@ -113,10 +113,12 @@ public class Main {
                 if(userInput2 == 5){
                     System.out.println("You chose A* search");
                     System.out.println("Running search....");
+                    search.aStar1FirstSearch();
                 }
                 if(userInput2 == 6){
                     System.out.println("You chose A* with Manhattan Search");
                     System.out.println("Running search....");
+                    search.aStar2FirstSearch();
                 }
 
             }
