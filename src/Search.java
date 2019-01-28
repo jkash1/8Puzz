@@ -30,6 +30,7 @@ public class Search {
     public void breadthFirstSearch() {
         queue.add(root); //adds root Node to queue
         boolean goalFound = false;
+        long start_time = System.currentTimeMillis();
         while (!queue.isEmpty() && !goalFound) { // checks if queue is not empty run loop
             nodesVisited += 1;
             Node currentNode = queue.poll(); // removes front node from queue adds to current
@@ -38,9 +39,11 @@ public class Search {
             for (Node childNode : nextSuccessors) {
                 if(!isList(visited, childNode.getPuzzleState())){ // checks to see if childNodeState is in visited
                     if (childNode.isGoal()) { //goal checker
+                        long end_time = System.currentTimeMillis();
                         childPathTracer(childPath, childNode);  //creates a path from found goal to rootNode
                         pathPrinter(childPath);//prints path from found goal to rootNode
                         GoalPrinter(nodesVisited, movementPrint(childPath), depthCalculator(childPath), movementCostPrint(childPath),  childNode.getTotalCost()); //Prints statistics
+                        System.out.println("Algo took " + (end_time - start_time) +"ms");
                         goalFound = true; //exits loop
                     }
                     if (!queue.contains(childNode)) { //make sure queue doesn't contain child
@@ -57,6 +60,7 @@ public class Search {
     public void depthFirstSearch() {
         stack.push(root); // pushes root Node onto Stack
         boolean goalFound = false;
+        long start_time = System.currentTimeMillis();
         while (!stack.empty() && !goalFound) { //checks if stack is not empty
             nodesVisited += 1;
             Node currentNode = stack.pop(); // removes top of stack
@@ -64,9 +68,11 @@ public class Search {
             for (Node childNode : nextSuccessors) {
                 if(!isList(visited, childNode.getPuzzleState())) { //checks if puzzle already visited
                     if (childNode.isGoal()) {
+                        long end_time = System.currentTimeMillis();
                         childPathTracer(childPath, childNode);
                         pathPrinter(childPath);
                         GoalPrinter(nodesVisited, movementPrint(childPath), depthCalculator(childPath), movementCostPrint(childPath), childNode.getTotalCost());
+                        System.out.println("Algo took " + (end_time - start_time) +"ms");
                         goalFound = true;
                     }
                     if (!stack.contains(childNode)) {
@@ -87,19 +93,22 @@ public void uniformCostSearch() {
     priorityQueue.add(root);//adds root Node to front of Priority queue
     boolean goalFound = false;
     int totalCost;
+    long start_time = System.currentTimeMillis();
     while (!priorityQueue.isEmpty() && !goalFound) { // checks if queue is not empty run loop
-        nodesVisited += 1;
+        nodesVisited += 1; //Counts visited nodes
         Node currentNode = priorityQueue.poll(); // removes highest priority Node
-        visited.add(currentNode.getPuzzleState()); // add the current Node to visited
+        visited.add(currentNode.getPuzzleState()); // add the current Node to visited array
         ArrayList<Node> nextSuccessors = currentNode.createSuccessors();//Creates Nodes in successor function
         for (Node childNode : nextSuccessors) {
             if(!isList(visited, childNode.getPuzzleState())){ // checks to see if childNodeState is in visited
                 totalCost = childNode.getCost() + childNode.getTotalCost(); // tallies Cost
                 childNode.setTotalCost(totalCost); //sets childNodes cost
                 if (childNode.isGoal()) { //goal checker
+                    long end_time = System.currentTimeMillis();
                     childPathTracer(childPath, childNode);  //creates a path from found goal to rootNode
                     pathPrinter(childPath);//prints path from found goal to rootNode
                     GoalPrinter(nodesVisited, movementPrint(childPath), depthCalculator(childPath), movementCostPrint(childPath), childNode.getTotalCost()); //Prints statistics
+                    System.out.println("Algo took " + (end_time - start_time) +"ms");
                     goalFound = true; //exits loop
                 }
                 if (!priorityQueue.contains(childNode)) { //make sure queue doesn't contain child
@@ -119,6 +128,7 @@ public void uniformCostSearch() {
     public void bestFirstSearch(){
         bestPriorityQueue.add(root);
         boolean goalFound = false;
+        long start_time = System.currentTimeMillis();
         while(!bestPriorityQueue.isEmpty() && !goalFound) {
             nodesVisited+=1;
             Node currentNode = bestPriorityQueue.poll(); // removes the min Node
@@ -127,12 +137,14 @@ public void uniformCostSearch() {
             for (Node childNode : nextSuccessors) {
                 if (!isList(visited, childNode.getPuzzleState())) { // checks to see if childNodeState is in visited
                     if (childNode.isGoal()) { //goal checker
+                        long end_time = System.currentTimeMillis();
                         childPathTracer(childPath, childNode);  //creates a path from found goal to rootNode
                         pathPrinter(childPath);//prints path from found goal to rootNode
                         GoalPrinter(nodesVisited, movementPrint(childPath), depthCalculator(childPath), movementCostPrint(childPath), childNode.getTotalCost()); //Prints statistics
+                        System.out.println("Algo took " + (end_time - start_time) +"ms");
                         goalFound = true; //exits loop
                     }
-                    childNode.setTotalCost(tileMovementHeuristic(childNode.getPuzzleState(), GOAL));
+                    childNode.setTotalCost(tileMovementHeuristic(childNode.getPuzzleState(), GOAL)); //sets total cost to the heuristic
                     if(!bestPriorityQueue.contains(childNode)){
                         bestPriorityQueue.add(childNode);
                     }
@@ -143,7 +155,7 @@ public void uniformCostSearch() {
 
 /*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
 /**
- * A*1
+ * A*1 Uses total running cost and the tile heuristic to calculate the least costly path to goal
  */
 
 PriorityQueue<Node> a1PriorityQueue = new PriorityQueue<>(costComparator);
@@ -151,6 +163,7 @@ PriorityQueue<Node> a1PriorityQueue = new PriorityQueue<>(costComparator);
         a1PriorityQueue.add(root);
         boolean goalFound = false;
         int totalCost;
+        long start_time = System.currentTimeMillis();
         while(!a1PriorityQueue.isEmpty() && !goalFound) {
             nodesVisited+=1;
             Node currentNode = a1PriorityQueue.poll(); // removes the min Node
@@ -158,10 +171,12 @@ PriorityQueue<Node> a1PriorityQueue = new PriorityQueue<>(costComparator);
             ArrayList<Node> nextSuccessors = currentNode.createSuccessors();
             for (Node childNode : nextSuccessors) {
                 if (!isList(visited, childNode.getPuzzleState())) { // checks to see if childNodeState is in visited
+                    long end_time = System.currentTimeMillis();
                     if (childNode.isGoal()) { //goal checker
                         childPathTracer(childPath, childNode);  //creates a path from found goal to rootNode
                         pathPrinter(childPath);//prints path from found goal to rootNode
                         GoalPrinter(nodesVisited, movementPrint(childPath), depthCalculator(childPath), movementCostPrint(childPath), childNode.getTotalCost()); //Prints statistics
+                        System.out.println("Algo took " + (end_time - start_time) +"ms");
                         goalFound = true; //exits loop
                     }
                     totalCost = childNode.getCost() + childNode.getTotalCost(); // tallies Cost
@@ -176,7 +191,7 @@ PriorityQueue<Node> a1PriorityQueue = new PriorityQueue<>(costComparator);
 
 /*\\\\\\\\\\\\\\/////////////////////////\\\\\\\\\\\\\\\\\\//////////////////////\\\\\\\\\\\\\\\\\\//////////////////////////\*/
 /**
- * A*2
+ * A*2 Uses total running cost and the manhattan distance to calculate the best route to goal
  * */
 
 PriorityQueue<Node> a2PriorityQueue = new PriorityQueue<>(costComparator);
@@ -184,18 +199,21 @@ PriorityQueue<Node> a2PriorityQueue = new PriorityQueue<>(costComparator);
         a2PriorityQueue.add(root);
         boolean goalFound = false;
         int totalCost;
+        long start_time = System.currentTimeMillis();
         while(!a2PriorityQueue.isEmpty() && !goalFound) {
             nodesVisited+=1;
-            System.out.println(nodesVisited);
+
             Node currentNode = a2PriorityQueue.poll(); // removes the min Node
             visited.add(currentNode.getPuzzleState());
             ArrayList<Node> nextSuccessors = currentNode.createSuccessors();
             for (Node childNode : nextSuccessors) {
                 if (!isList(visited, childNode.getPuzzleState())) { // checks to see if childNodeState is in visited
+                    long end_time = System.currentTimeMillis();
                     if (childNode.isGoal()) { //goal checker
                         childPathTracer(childPath, childNode);  //creates a path from found goal to rootNode
                         pathPrinter(childPath);//prints path from found goal to rootNode
                         GoalPrinter(nodesVisited, movementPrint(childPath), depthCalculator(childPath), movementCostPrint(childPath), childNode.getTotalCost()); //Prints statistics
+                        System.out.println("Algo took " + (end_time - start_time) +"ms");
                         goalFound = true; //exits loop
                     }
                     totalCost = childNode.getCost() + childNode.getTotalCost(); // tallies Cost
@@ -252,6 +270,12 @@ PriorityQueue<Node> a2PriorityQueue = new PriorityQueue<>(costComparator);
         }
     }
 
+    /**
+     * Helps print cost for BFS and DFS
+     * @param childPath
+     * @return
+     */
+
     public  int movementCostPrint(List<Node> childPath){
         int sum = 0;
         ArrayList<Integer> movementCost = new ArrayList<>();
@@ -264,12 +288,22 @@ PriorityQueue<Node> a2PriorityQueue = new PriorityQueue<>(costComparator);
         return sum;
     }
 
+    /**
+     * Used in priority queue to sort priority queue by the totalCost keeping the min item
+     * at front of the queue
+     */
     public static Comparator<Node> costComparator = new Comparator<Node>() {
         @Override
         public int compare(Node o1, Node o2) {
             return (o1.getTotalCost() - o2.getTotalCost());
         }
     };
+
+    /**
+     * Helper function to calculate depth
+     * @param childPath
+     * @return
+     */
 
     public int depthCalculator(List<Node> childPath){
         int depth = 0;
@@ -279,6 +313,11 @@ PriorityQueue<Node> a2PriorityQueue = new PriorityQueue<>(costComparator);
         return depth;
     }
 
+    /**
+     * Prints the moves from goalNode to root
+     * @param childPath
+     * @return
+     */
     public ArrayList<String> movementPrint(List<Node> childPath) {
         ArrayList<String> movement = new ArrayList<>();
         if (childPath.size() > 0) {
@@ -307,6 +346,13 @@ PriorityQueue<Node> a2PriorityQueue = new PriorityQueue<>(costComparator);
     }
 
 
+    /**
+     * First heuristic tallies the amount of tiles that are out of place
+     * used in GBFS and A*1
+     * @param puzzleState
+     * @param goal
+     * @return
+     */
     private int tileMovementHeuristic(int[] puzzleState, int[] goal){
         int missedTiles = 0;
         for(int i = 0; i < puzzleState.length; i++){
@@ -317,18 +363,21 @@ PriorityQueue<Node> a2PriorityQueue = new PriorityQueue<>(costComparator);
         return missedTiles;
     }
 
-
+    /**
+     * Manhattan distance calculator used in A*2
+     * @param puzzleState
+     * @param goal
+     * @return
+     */
     private int manhattanHeuristic(int[] puzzleState, int[] goal){
         int manhattanDistance = 0;
         for(int i = 0; i < puzzleState.length;i++){
             for(int j = 0; j < puzzleState.length; j++){
                 if(puzzleState[i] == GOAL[j]){
-                    manhattanDistance = ((Math.abs(i % 3 - j % 3)) + (Math.abs(i / 3 + j / 3)));
+                    manhattanDistance =  manhattanDistance + ((Math.abs(i % 3 - j % 3)) + (Math.abs(i / 3 + j / 3)));
                 }
             }
         }
         return manhattanDistance;
     }
-
-
 }

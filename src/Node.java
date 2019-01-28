@@ -16,10 +16,8 @@ public class Node {
     private String move;
 
     private int cost; //cost of a single node g(n)
-    private int eval; //f(n)
-    private int costToGoal; // h(n)
     private int totalCost; // g(n) cost from start to node n
-    private int numMisplaced;
+
 
     private final int[] GOAL = new int[]{ 1,2,3,8,0,4,7,6,5 }; //Goal State
     private int[] puzzleState; //Nodes puzzleState
@@ -44,18 +42,6 @@ public class Node {
     public int getCost() {
         return cost;
     }
-
-    public int getCostToGoal() {
-        return costToGoal;
-    }
-    public void setCostToGoal(int costToGoal) {
-        this.costToGoal = costToGoal;
-    }
-    public void setNumMisplaces(int numMisplaced){ this.numMisplaced = numMisplaced;}
-
-    public int getNumMisplaced(){return numMisplaced;}
-
-
 
     public int getTotalCost() {
         return totalCost;
